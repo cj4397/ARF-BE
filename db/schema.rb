@@ -107,10 +107,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
 
   create_table "families", force: :cascade do |t|
     t.text "person"
+    t.text "partner"
+    t.text "children"
+    t.integer "parentId"
     t.text "family_history"
     t.integer "clan_id"
+    t.integer "child_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_families_on_child_id"
     t.index ["clan_id"], name: "index_families_on_clan_id"
   end
 
@@ -162,6 +167,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
     t.string "partner"
     t.string "status"
     t.text "children"
+    t.boolean "has_children"
     t.integer "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -174,8 +180,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
     t.string "status"
     t.integer "family_id"
     t.integer "member_id"
+    t.integer "child_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_people_on_child_id"
     t.index ["family_id"], name: "index_people_on_family_id"
     t.index ["member_id"], name: "index_people_on_member_id"
   end
@@ -231,6 +239,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
   add_foreign_key "clan_requests", "clans"
   add_foreign_key "comments", "edits"
   add_foreign_key "edits", "clans"
+  add_foreign_key "families", "children"
   add_foreign_key "families", "clans"
   add_foreign_key "family_histories", "families"
   add_foreign_key "histories", "clan_histories"
@@ -241,6 +250,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
   add_foreign_key "members", "users"
   add_foreign_key "memories", "clans"
   add_foreign_key "partners", "people"
+  add_foreign_key "people", "children"
   add_foreign_key "people", "families"
   add_foreign_key "people", "members"
   add_foreign_key "requests", "branch_creations"

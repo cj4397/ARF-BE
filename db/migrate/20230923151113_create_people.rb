@@ -4,9 +4,10 @@ class CreatePeople < ActiveRecord::Migration[7.0]
       t.string :name
       t.text :partner
       t.string :status
-      
+
       t.references :family, foreign_key:true
       t.references :member, foreign_key:true
+      t.references :child, foreign_key:true
 
       t.timestamps
     end

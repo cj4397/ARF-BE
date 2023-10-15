@@ -97,4 +97,96 @@ class MemberController < ApplicationController
             render json:{error:"Comment is not Stored"}, status:400
         end
     end
+
+    def register_person
+        if params[:parent_id]
+            parent=Child.create(
+                :partner_id => params[:parent_id]
+            )
+
+            family=Family.create(
+                # :name => params[:name].split(" ").first,
+                :clan_id=>@clan.id,
+        
+                :parentId => params[:family_id]
+                
+            )
+        else
+            family=Family.create(
+                :clan_id=>@clan.id
+            )
+         end
+
+        person=Person.new(
+            :name => params[:name],
+            :status => params[:status],
+            :family_id => family.id
+        )
+        if person.save
+            render json:{message:params[:name] + " is registered", person:person}
+        else
+            family.destroy
+            render json:{error:"Person Error"} , status:400
+        end
+    end
+
+    
+    def get_parent
+
+        family=@clan.family.where(:has_children == true)
+        # family=@clan.family
+
+        parent=[]
+        family.each do |x|
+           parent.push(person:x,partner: x.partner.where(:has_children == true))
+        end
+        # render json:{family:parent,person:family}
+        render json:{family:family}
+    end
+     
+    def register_partner
+
+        partner=Partner.new(
+            :partner => params[:name],
+            :status => params[:status],
+            :has_children => params[:has_children],
+            :person_id => params[:person_id]
+        )
+        if partner.save
+            render json:{message:"partner is registered"}
+        else
+            render json:{error:"Partner Error"}
+        end
+
+    end
+
+    def ancestral_tree
+        tree=@clan.family
+    # render json:{tree:Child.all}
+        render json:{family:tree}
+    end
+
+def record_family_story
+    family_history=FamilyHistory.create(
+        :family_id =>params[:family_id]
+    )
+       history=History.new(
+        :family_history_id => family_history.id,
+        :title => params[:title],
+        :details => params[:details],
+       )
+
+       if history.save
+            render json:{message:"Story is recorded"}
+       else
+            family_history.destroy
+            render json:{error:"history error"}
+       end
+    end
+
+    def clan_details
+        details =@clan.clan_detail
+        render json:{details:details}
+    end
+
 end

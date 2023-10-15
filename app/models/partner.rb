@@ -1,4 +1,4 @@
 class Partner < ApplicationRecord
     has_many :children
-    belongs_to :partner
+    belongs_to :person
 end

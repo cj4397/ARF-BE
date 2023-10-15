@@ -1,4 +1,4 @@
 class FamilyHistory < ApplicationRecord
     has_one :history
-    belongs_to :clan
+    belongs_to :family
 end

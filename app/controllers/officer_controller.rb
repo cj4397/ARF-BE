@@ -39,28 +39,7 @@ class OfficerController < ApplicationController
         
     end
 
-    def create_family
-    end
-
-    def create_person
-    end
-
-    def create_partner
-    end
-
-    def create_children
-    end
-
-    def create_family_history
-    end
-
-    def create_clan_history
-        
-    end
-
-    def create_memories
-    end
-
+    
     
     
 

@@ -26,6 +26,11 @@ Rails.application.routes.draw do
   post '/memory' => 'member#get_memories'
   post '/create_memory' => 'member#record_memory'
   post '/create_comment' => 'member#comment'
-   
+  post '/get_parent' => 'member#get_parent'
+  post '/register_person' => 'member#register_person'
+  post '/register_partner' => 'member#register_partner'
+  post '/ancestral_tree' => 'member#ancestral_tree'
+  post '/clan-details' => 'member#clan_details'
+  post '/family_story' => 'member#record_family_story'
 
 end
