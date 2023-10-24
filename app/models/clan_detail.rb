@@ -3,5 +3,5 @@ class ClanDetail < ApplicationRecord
     
     belongs_to :clan
     belongs_to :clan_details_edit, optional:true
-    has_many :branch_clan, :through => :clan
+    belongs_to :branch_clan, optional:true
 end

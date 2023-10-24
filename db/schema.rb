@@ -13,6 +13,7 @@
 ActiveRecord::Schema[7.0].define(version: 2023_10_20_081403) do
   create_table "branch_clans", force: :cascade do |t|
     t.integer "branch_clan_id"
+    t.text "clan_detail"
     t.integer "clan_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -46,11 +47,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_081403) do
   create_table "clan_details", force: :cascade do |t|
     t.string "name"
     t.string "details"
-    t.text "branch_clan"
+    t.integer "branch_clan_id"
     t.integer "clan_id"
     t.integer "clan_details_edit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["branch_clan_id"], name: "index_clan_details_on_branch_clan_id"
     t.index ["clan_details_edit_id"], name: "index_clan_details_on_clan_details_edit_id"
     t.index ["clan_id"], name: "index_clan_details_on_clan_id"
   end
@@ -451,6 +453,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_081403) do
   end
 
   add_foreign_key "branch_clans", "clans"
+  add_foreign_key "clan_details", "branch_clans"
   add_foreign_key "clan_details", "clan_details_edits"
   add_foreign_key "clan_details", "clans"
   add_foreign_key "clan_details_edits", "edits"

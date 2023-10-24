@@ -91,4 +91,5 @@ Rails.application.routes.draw do
   post '/delete_family_history_comment' => 'member#delete_family_history_comment'
   post '/delete_memory_comment' => 'member#delete_memory_comment'
 
+  post '/user'=> 'users#user'
 end

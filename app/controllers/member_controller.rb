@@ -324,10 +324,11 @@ class MemberController < ApplicationController
 
     def clan_details
         details='Edit in Process'
+        branch=@clan.branch_clan
         if @clan.clan_detail.clan_details_edit_id== nil
             details =@clan.clan_detail
         end
-        render json:{details:details}
+        render json:{details:details, branch:branch}
     end
 
 
@@ -659,6 +660,7 @@ class MemberController < ApplicationController
             render json:{error:"Comment is not Stored"}, status:400
         end
     end
+
 
    
 

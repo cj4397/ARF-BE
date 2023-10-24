@@ -67,7 +67,7 @@ class UsersController < ApplicationController
 
             clan=Clan.create()
 
-            branch_clan=BranchClan.new(
+            branch_clan=BranchClan.create(
                 :branch_clan_id => clan.id,
                 :clan_id=>main_clan_details.clan_id
             )
@@ -82,7 +82,10 @@ class UsersController < ApplicationController
 
             details=ClanDetail.new(
                 :name => request.name,
-                :clan_id => clan.id
+                :branch_clan_id => branch_clan.id,
+                :clan_id => clan.id,
+
+                
             )
 
             member=Member.new(
@@ -91,7 +94,7 @@ class UsersController < ApplicationController
                 :user_id => user.id
             )
 
-            if details.save && member.save && branch_clan.save && edit.save && delete.save
+            if details.save && member.save && edit.save && delete.save
                
                 branch_request.update(
                     :approved => true
@@ -131,7 +134,32 @@ class UsersController < ApplicationController
     end
 
                 # For ALL
-        # for searching Clans to join
+    def user
+        user=User.find_by_token(params[:token]) 
+        if user
+            clan_join_request=user.user_detail.where.not(:clan_request_id => nil)
+            clan_creation_request=user.user_detail.where.not(:clan_creation_id => nil)
+            branch_creation_request=user.user_detail.where.not(:branch_creation_id => nil)
+            member=user.member
+
+            details={
+                    first_name:user.first_name,
+                    middle_name:user.middle_name,
+                    last_name:user.last_name,
+                    email:user.email
+                }
+            render json:{
+                user: details,
+                clan_join_request:clan_join_request,
+                clan_creation_request:clan_creation_request,
+                branch_creation_request:branch_creation_request,
+                member:member
+            }
+        else
+            render json:{error:"No such user exist"}
+        end
+    end
+
     def show_clans
         user=User.find_by_token(params[:token]) 
         if user
