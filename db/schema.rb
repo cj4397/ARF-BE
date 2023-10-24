@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_20_081403) do
   create_table "branch_clans", force: :cascade do |t|
     t.integer "branch_clan_id"
     t.integer "clan_id"
@@ -28,7 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
   end
 
   create_table "children", force: :cascade do |t|
-    t.text "person"
+    t.text "family"
     t.integer "partner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -46,18 +46,61 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
   create_table "clan_details", force: :cascade do |t|
     t.string "name"
     t.string "details"
+    t.text "branch_clan"
     t.integer "clan_id"
+    t.integer "clan_details_edit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["clan_details_edit_id"], name: "index_clan_details_on_clan_details_edit_id"
     t.index ["clan_id"], name: "index_clan_details_on_clan_id"
+  end
+
+  create_table "clan_details_edits", force: :cascade do |t|
+    t.string "name"
+    t.text "details"
+    t.string "reason"
+    t.boolean "approved"
+    t.integer "clan_detail"
+    t.text "user_detail"
+    t.text "comment"
+    t.integer "edit_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edit_id"], name: "index_clan_details_edits_on_edit_id"
   end
 
   create_table "clan_histories", force: :cascade do |t|
     t.text "history"
     t.integer "clan_id"
+    t.integer "clan_history_delete_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["clan_history_delete_id"], name: "index_clan_histories_on_clan_history_delete_id"
     t.index ["clan_id"], name: "index_clan_histories_on_clan_id"
+  end
+
+  create_table "clan_history_deletes", force: :cascade do |t|
+    t.string "reason"
+    t.text "user_detail"
+    t.text "clan_history"
+    t.text "comment"
+    t.boolean "cancelled"
+    t.integer "delete_collection_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delete_collection_id"], name: "index_clan_history_deletes_on_delete_collection_id"
+  end
+
+  create_table "clan_history_edits", force: :cascade do |t|
+    t.integer "history_edit"
+    t.integer "history"
+    t.integer "user_detail"
+    t.string "reason"
+    t.boolean "approved"
+    t.integer "edit_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edit_id"], name: "index_clan_history_edits_on_edit_id"
   end
 
   create_table "clan_requests", force: :cascade do |t|
@@ -79,6 +122,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
     t.text "edit"
     t.text "memory"
     t.text "clan_request"
+    t.text "delete_collection"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -86,19 +130,47 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
   create_table "comments", force: :cascade do |t|
     t.integer "user_detail"
     t.text "details"
-    t.integer "edit_id"
+    t.integer "history_edit_id"
+    t.integer "clan_details_edit_id"
+    t.integer "family_edit_id"
+    t.integer "partner_edit_id"
+    t.integer "family_delete_id"
+    t.integer "partner_delete_id"
+    t.integer "clan_history_delete_id"
+    t.integer "family_history_delete_id"
+    t.integer "memory_delete_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["edit_id"], name: "index_comments_on_edit_id"
+    t.index ["clan_details_edit_id"], name: "index_comments_on_clan_details_edit_id"
+    t.index ["clan_history_delete_id"], name: "index_comments_on_clan_history_delete_id"
+    t.index ["family_delete_id"], name: "index_comments_on_family_delete_id"
+    t.index ["family_edit_id"], name: "index_comments_on_family_edit_id"
+    t.index ["family_history_delete_id"], name: "index_comments_on_family_history_delete_id"
+    t.index ["history_edit_id"], name: "index_comments_on_history_edit_id"
+    t.index ["memory_delete_id"], name: "index_comments_on_memory_delete_id"
+    t.index ["partner_delete_id"], name: "index_comments_on_partner_delete_id"
+    t.index ["partner_edit_id"], name: "index_comments_on_partner_edit_id"
+  end
+
+  create_table "delete_collections", force: :cascade do |t|
+    t.text "family_delete"
+    t.text "partner_delete"
+    t.text "clan_history_delete"
+    t.text "family_history_delete"
+    t.text "memory_delete"
+    t.integer "clan_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["clan_id"], name: "index_delete_collections_on_clan_id"
   end
 
   create_table "edits", force: :cascade do |t|
-    t.string "title"
-    t.text "details"
-    t.integer "user_detail"
-    t.text "history"
-    t.text "comment"
-    t.boolean "approved"
+    t.text "memory_edit"
+    t.text "family_history_edit"
+    t.text "clan_history_edit"
+    t.text "partner_edit"
+    t.text "family_edit"
+    t.text "clan_details_edit"
     t.integer "clan_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -113,18 +185,73 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
     t.text "family_history"
     t.integer "clan_id"
     t.integer "child_id"
+    t.integer "family_edit_id"
+    t.integer "family_delete_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_families_on_child_id"
     t.index ["clan_id"], name: "index_families_on_clan_id"
+    t.index ["family_delete_id"], name: "index_families_on_family_delete_id"
+    t.index ["family_edit_id"], name: "index_families_on_family_edit_id"
+  end
+
+  create_table "family_deletes", force: :cascade do |t|
+    t.string "reason"
+    t.text "user_detail"
+    t.text "family"
+    t.text "comment"
+    t.boolean "cancelled"
+    t.integer "delete_collection_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delete_collection_id"], name: "index_family_deletes_on_delete_collection_id"
+  end
+
+  create_table "family_edits", force: :cascade do |t|
+    t.string "name"
+    t.string "status"
+    t.string "reason"
+    t.text "comment"
+    t.text "user_detail"
+    t.text "family"
+    t.integer "edit_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edit_id"], name: "index_family_edits_on_edit_id"
   end
 
   create_table "family_histories", force: :cascade do |t|
     t.text "history"
     t.integer "family_id"
+    t.integer "family_history_delete_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["family_history_delete_id"], name: "index_family_histories_on_family_history_delete_id"
     t.index ["family_id"], name: "index_family_histories_on_family_id"
+  end
+
+  create_table "family_history_deletes", force: :cascade do |t|
+    t.string "reason"
+    t.text "user_detail"
+    t.text "family_history"
+    t.text "comment"
+    t.boolean "cancelled"
+    t.integer "delete_collection_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delete_collection_id"], name: "index_family_history_deletes_on_delete_collection_id"
+  end
+
+  create_table "family_history_edits", force: :cascade do |t|
+    t.integer "history_edit"
+    t.integer "history"
+    t.integer "user_detail"
+    t.string "reason"
+    t.boolean "approved"
+    t.integer "edit_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edit_id"], name: "index_family_history_edits_on_edit_id"
   end
 
   create_table "histories", force: :cascade do |t|
@@ -133,13 +260,31 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
     t.integer "clan_history_id"
     t.integer "family_history_id"
     t.integer "memory_id"
-    t.integer "edit_id"
+    t.integer "clan_history_edit_id"
+    t.integer "family_history_edit_id"
+    t.integer "memory_edit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["clan_history_edit_id"], name: "index_histories_on_clan_history_edit_id"
     t.index ["clan_history_id"], name: "index_histories_on_clan_history_id"
-    t.index ["edit_id"], name: "index_histories_on_edit_id"
+    t.index ["family_history_edit_id"], name: "index_histories_on_family_history_edit_id"
     t.index ["family_history_id"], name: "index_histories_on_family_history_id"
+    t.index ["memory_edit_id"], name: "index_histories_on_memory_edit_id"
     t.index ["memory_id"], name: "index_histories_on_memory_id"
+  end
+
+  create_table "history_edits", force: :cascade do |t|
+    t.string "title"
+    t.text "details"
+    t.text "comment"
+    t.integer "memory_edit_id"
+    t.integer "family_history_edit_id"
+    t.integer "clan_history_edit_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["clan_history_edit_id"], name: "index_history_edits_on_clan_history_edit_id"
+    t.index ["family_history_edit_id"], name: "index_history_edits_on_family_history_edit_id"
+    t.index ["memory_edit_id"], name: "index_history_edits_on_memory_edit_id"
   end
 
   create_table "members", force: :cascade do |t|
@@ -158,9 +303,60 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
   create_table "memories", force: :cascade do |t|
     t.text "history"
     t.integer "clan_id"
+    t.integer "memory_delete_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["clan_id"], name: "index_memories_on_clan_id"
+    t.index ["memory_delete_id"], name: "index_memories_on_memory_delete_id"
+  end
+
+  create_table "memory_deletes", force: :cascade do |t|
+    t.string "reason"
+    t.text "user_detail"
+    t.text "memory"
+    t.text "comment"
+    t.boolean "cancelled"
+    t.integer "delete_collection_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delete_collection_id"], name: "index_memory_deletes_on_delete_collection_id"
+  end
+
+  create_table "memory_edits", force: :cascade do |t|
+    t.integer "history_edit"
+    t.integer "history"
+    t.integer "user_detail"
+    t.string "reason"
+    t.boolean "approved"
+    t.integer "edit_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edit_id"], name: "index_memory_edits_on_edit_id"
+  end
+
+  create_table "partner_deletes", force: :cascade do |t|
+    t.string "reason"
+    t.text "user_detail"
+    t.text "partner"
+    t.text "comment"
+    t.boolean "cancelled"
+    t.integer "delete_collection_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delete_collection_id"], name: "index_partner_deletes_on_delete_collection_id"
+  end
+
+  create_table "partner_edits", force: :cascade do |t|
+    t.string "name"
+    t.string "status"
+    t.string "reason"
+    t.text "comment"
+    t.text "user_detail"
+    t.text "partner"
+    t.integer "edit_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["edit_id"], name: "index_partner_edits_on_edit_id"
   end
 
   create_table "partners", force: :cascade do |t|
@@ -169,8 +365,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
     t.text "children"
     t.boolean "has_children"
     t.integer "person_id"
+    t.integer "partner_edit_id"
+    t.integer "partner_delete_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["partner_delete_id"], name: "index_partners_on_partner_delete_id"
+    t.index ["partner_edit_id"], name: "index_partners_on_partner_edit_id"
     t.index ["person_id"], name: "index_partners_on_person_id"
   end
 
@@ -180,10 +380,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
     t.string "status"
     t.integer "family_id"
     t.integer "member_id"
-    t.integer "child_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["child_id"], name: "index_people_on_child_id"
     t.index ["family_id"], name: "index_people_on_family_id"
     t.index ["member_id"], name: "index_people_on_member_id"
   end
@@ -201,20 +399,39 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
 
   create_table "user_details", force: :cascade do |t|
     t.string "name"
-    t.string "nickname"
     t.integer "clan_request_id"
     t.integer "branch_creation_id"
     t.integer "clan_creation_id"
-    t.integer "edit_id"
     t.integer "comment_id"
+    t.integer "memory_edit_id"
+    t.integer "family_history_edit_id"
+    t.integer "clan_history_edit_id"
+    t.integer "family_edit_id"
+    t.integer "partner_edit_id"
+    t.integer "clan_details_edit_id"
+    t.integer "family_delete_id"
+    t.integer "partner_delete_id"
+    t.integer "clan_history_delete_id"
+    t.integer "family_history_delete_id"
+    t.integer "memory_delete_id"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["branch_creation_id"], name: "index_user_details_on_branch_creation_id"
     t.index ["clan_creation_id"], name: "index_user_details_on_clan_creation_id"
+    t.index ["clan_details_edit_id"], name: "index_user_details_on_clan_details_edit_id"
+    t.index ["clan_history_delete_id"], name: "index_user_details_on_clan_history_delete_id"
+    t.index ["clan_history_edit_id"], name: "index_user_details_on_clan_history_edit_id"
     t.index ["clan_request_id"], name: "index_user_details_on_clan_request_id"
     t.index ["comment_id"], name: "index_user_details_on_comment_id"
-    t.index ["edit_id"], name: "index_user_details_on_edit_id"
+    t.index ["family_delete_id"], name: "index_user_details_on_family_delete_id"
+    t.index ["family_edit_id"], name: "index_user_details_on_family_edit_id"
+    t.index ["family_history_delete_id"], name: "index_user_details_on_family_history_delete_id"
+    t.index ["family_history_edit_id"], name: "index_user_details_on_family_history_edit_id"
+    t.index ["memory_delete_id"], name: "index_user_details_on_memory_delete_id"
+    t.index ["memory_edit_id"], name: "index_user_details_on_memory_edit_id"
+    t.index ["partner_delete_id"], name: "index_user_details_on_partner_delete_id"
+    t.index ["partner_edit_id"], name: "index_user_details_on_partner_edit_id"
     t.index ["user_id"], name: "index_user_details_on_user_id"
   end
 
@@ -234,31 +451,73 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_28_084732) do
   end
 
   add_foreign_key "branch_clans", "clans"
+  add_foreign_key "clan_details", "clan_details_edits"
   add_foreign_key "clan_details", "clans"
+  add_foreign_key "clan_details_edits", "edits"
+  add_foreign_key "clan_histories", "clan_history_deletes"
   add_foreign_key "clan_histories", "clans"
+  add_foreign_key "clan_history_deletes", "delete_collections"
+  add_foreign_key "clan_history_edits", "edits"
   add_foreign_key "clan_requests", "clans"
-  add_foreign_key "comments", "edits"
+  add_foreign_key "comments", "clan_details_edits"
+  add_foreign_key "comments", "clan_history_deletes"
+  add_foreign_key "comments", "family_deletes"
+  add_foreign_key "comments", "family_edits"
+  add_foreign_key "comments", "family_history_deletes"
+  add_foreign_key "comments", "history_edits"
+  add_foreign_key "comments", "memory_deletes"
+  add_foreign_key "comments", "partner_deletes"
+  add_foreign_key "comments", "partner_edits"
+  add_foreign_key "delete_collections", "clans"
   add_foreign_key "edits", "clans"
   add_foreign_key "families", "children"
   add_foreign_key "families", "clans"
+  add_foreign_key "families", "family_deletes"
+  add_foreign_key "families", "family_edits"
+  add_foreign_key "family_deletes", "delete_collections"
+  add_foreign_key "family_edits", "edits"
   add_foreign_key "family_histories", "families"
+  add_foreign_key "family_histories", "family_history_deletes"
+  add_foreign_key "family_history_deletes", "delete_collections"
+  add_foreign_key "family_history_edits", "edits"
   add_foreign_key "histories", "clan_histories"
-  add_foreign_key "histories", "edits"
+  add_foreign_key "histories", "clan_history_edits"
   add_foreign_key "histories", "family_histories"
+  add_foreign_key "histories", "family_history_edits"
   add_foreign_key "histories", "memories"
+  add_foreign_key "histories", "memory_edits"
+  add_foreign_key "history_edits", "clan_history_edits"
+  add_foreign_key "history_edits", "family_history_edits"
+  add_foreign_key "history_edits", "memory_edits"
   add_foreign_key "members", "clans"
   add_foreign_key "members", "users"
   add_foreign_key "memories", "clans"
+  add_foreign_key "memories", "memory_deletes"
+  add_foreign_key "memory_deletes", "delete_collections"
+  add_foreign_key "memory_edits", "edits"
+  add_foreign_key "partner_deletes", "delete_collections"
+  add_foreign_key "partner_edits", "edits"
+  add_foreign_key "partners", "partner_deletes"
+  add_foreign_key "partners", "partner_edits"
   add_foreign_key "partners", "people"
-  add_foreign_key "people", "children"
   add_foreign_key "people", "families"
   add_foreign_key "people", "members"
   add_foreign_key "requests", "branch_creations"
   add_foreign_key "requests", "clan_creations"
   add_foreign_key "user_details", "branch_creations"
   add_foreign_key "user_details", "clan_creations"
+  add_foreign_key "user_details", "clan_details_edits"
+  add_foreign_key "user_details", "clan_history_deletes"
+  add_foreign_key "user_details", "clan_history_edits"
   add_foreign_key "user_details", "clan_requests"
   add_foreign_key "user_details", "comments"
-  add_foreign_key "user_details", "edits"
+  add_foreign_key "user_details", "family_deletes"
+  add_foreign_key "user_details", "family_edits"
+  add_foreign_key "user_details", "family_history_deletes"
+  add_foreign_key "user_details", "family_history_edits"
+  add_foreign_key "user_details", "memory_deletes"
+  add_foreign_key "user_details", "memory_edits"
+  add_foreign_key "user_details", "partner_deletes"
+  add_foreign_key "user_details", "partner_edits"
   add_foreign_key "user_details", "users"
 end

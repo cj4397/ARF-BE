@@ -3,6 +3,7 @@ class CreateMemories < ActiveRecord::Migration[7.0]
     create_table :memories do |t|
       t.text :history
       t.references :clan, foreign_key:true
+      t.references :memory_delete, foreign_key:true
 
       t.timestamps
     end

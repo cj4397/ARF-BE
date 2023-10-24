@@ -7,7 +7,7 @@ class CreatePeople < ActiveRecord::Migration[7.0]
 
       t.references :family, foreign_key:true
       t.references :member, foreign_key:true
-      t.references :child, foreign_key:true
+    
 
       t.timestamps
     end

@@ -7,6 +7,8 @@ class CreatePartners < ActiveRecord::Migration[7.0]
       t.boolean :has_children
  
       t.references :person, foreign_key:true
+      t.references :partner_edit, foreign_key:true
+      t.references :partner_delete, foreign_key:true
 
       t.timestamps
     end

@@ -7,7 +7,9 @@ class CreateHistories < ActiveRecord::Migration[7.0]
       t.references :clan_history, foreign_key:true
       t.references :family_history, foreign_key:true
       t.references :memory, foreign_key:true
-      t.references :edit, foreign_key:true
+      t.references :clan_history_edit, foreign_key:true
+      t.references :family_history_edit, foreign_key:true
+      t.references :memory_edit, foreign_key:true
 
       t.timestamps
     end

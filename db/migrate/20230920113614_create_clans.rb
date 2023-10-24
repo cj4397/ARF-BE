@@ -10,6 +10,7 @@ class CreateClans < ActiveRecord::Migration[7.0]
       t.text :edit
       t.text :memory
       t.text :clan_request
+      t.text :delete_collection
 
       t.timestamps
     end

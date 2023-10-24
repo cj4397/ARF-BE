@@ -1,4 +1,4 @@
 class Child < ApplicationRecord
-    has_one :person
+    has_one :family, dependent: :destroy
     belongs_to :partner
 end

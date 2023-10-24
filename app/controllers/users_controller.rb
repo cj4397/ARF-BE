@@ -24,13 +24,22 @@ class UsersController < ApplicationController
                 :clan_id => clan.id
             )
 
+            edit=Edit.new(
+                    :clan_id => clan.id
+                )
+
+            delete=DeleteCollection.new(
+                :clan_id => clan.id
+            )
+
             member=Member.new(
                     :officer => true,
                     :clan_id => clan.id,
                     :user_id => user.id
                 )
 
-            if details.save && member.save
+            if details.save && member.save && edit.save && delete.save
+                
                 
                     clan_request.update(
                         :approved => true
@@ -39,7 +48,7 @@ class UsersController < ApplicationController
                 
             else
                  clan.destroy
-                 render json: {error:"error details",clan:Clan.all, member:member},status:400
+                 render json: {error:"error details",clan:Clan.all, member:member, edit:edit, details:details},status:400
                
                
             end
@@ -63,6 +72,14 @@ class UsersController < ApplicationController
                 :clan_id=>main_clan_details.clan_id
             )
 
+            edit= Edit.new(
+                    :clan_id => clan.id
+                )
+
+            delete=DeleteCollection.new(
+                :clan_id => clan.id
+            )
+
             details=ClanDetail.new(
                 :name => request.name,
                 :clan_id => clan.id
@@ -74,8 +91,8 @@ class UsersController < ApplicationController
                 :user_id => user.id
             )
 
-            if details.save && member.save && branch_clan.save
-
+            if details.save && member.save && branch_clan.save && edit.save && delete.save
+               
                 branch_request.update(
                     :approved => true
                 )
